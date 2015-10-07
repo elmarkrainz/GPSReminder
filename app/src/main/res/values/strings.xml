@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GPSReminder</string>
+    <string name="intro">The GPS Reminder runs in the background and tells you if GPS is activated.</string>
+    <string name="action_settings">Settings</string>
+  <string name="gps_active">GPS is active</string>
+    <string name="gps_inactive">GPS is inactive</string>
+    
+</resources>
