@@ -50,6 +50,9 @@ public class SettingsHelper {
 		edPrfs.commit();
 	}
 
+
+	// Getter/Setter for Accessing the Settings
+
 	public int getTimePeriod() {
 		return timePeriod;
 
@@ -78,6 +81,5 @@ public class SettingsHelper {
 		saveSettings();
 	}
 
-	// Getter/Setter for Accessing the Settings
 
 }

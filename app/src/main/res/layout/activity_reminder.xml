@@ -55,7 +55,7 @@
                 android:onClick="startService"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:text="Remind me!"
+                android:text="@string/remind_me"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -67,7 +67,7 @@
                 android:onClick="stopService"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:text="Don&apos;t tell me!"
+                android:text="@string/don_t_tell_me"
                 android:textColor="@android:color/white" >
             </Button>
         </LinearLayout>
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
-                    android:text="Settings"
+                    android:text="@string/settings"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
                 <!--
                 <TextView
@@ -104,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Time-period to remind me!" />
+                    android:text="@string/time_period_to_remind_me" />
 
                 <Spinner
                     android:id="@+id/spinner1"
@@ -115,25 +115,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Auto-start" />
+                    android:text="@string/auto_start" />
 
                 <CheckBox
                     android:id="@+id/checkBoxAuto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Start GPS-Reminder automatically after starting the device" />
+                    android:text="@string/start_gps_reminder_automatically_after_starting_the_device" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Keep running" />
+                    android:text="@string/keep_running" />
 
                 <CheckBox
                     android:id="@+id/checkBoxRunning1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="keep Service running" />
+                    android:text="@string/keep_service_running" />
 
                 <Button
                     android:id="@+id/opengpssettings"
@@ -142,7 +142,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/btnstyle"
                     android:onClick="openGpsSettings"
-                    android:text="GPS Settings"
+                    android:text="@string/gps_settings"
                     android:textColor="@android:color/white" />
             </LinearLayout>
         </ScrollView>

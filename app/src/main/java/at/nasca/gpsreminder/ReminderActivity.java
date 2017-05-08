@@ -5,12 +5,9 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,125 +17,124 @@ import android.widget.Spinner;
 
 public class ReminderActivity extends Activity {
 
-	SettingsHelper settings;
-	
-	private Spinner spinner1;
-	private CheckBox keepRunnning, autostart;
-	
+    private SettingsHelper settings;
+    private Spinner timeSpinner;
+    private CheckBox keepRunnning, autostart;
+    private Button stop;
+    private Button start;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_reminder);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_reminder);
 
-		spinner1 = (Spinner) findViewById(R.id.spinner1);
-		keepRunnning = (CheckBox) findViewById(R.id.checkBoxRunning1);
-		autostart = (CheckBox) findViewById(R.id.checkBoxAuto);
+        timeSpinner = (Spinner) findViewById(R.id.spinner1);
+        keepRunnning = (CheckBox) findViewById(R.id.checkBoxRunning1);
+        autostart = (CheckBox) findViewById(R.id.checkBoxAuto);
 
-		
-		
-		List<String> list = new ArrayList<String>();
-		list.add("30");
-		list.add("60");
-		list.add("90");
-		list.add("120");
-		list.add("10");
-		list.add("5");
-		list.add("1");
+        stop = (Button) findViewById(R.id.buttonStop);
+        start = (Button) findViewById(R.id.buttonStart);
 
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, list);
 
-		dataAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        List<String> list = new ArrayList<String>();
+        list.add("5");
+        list.add("10");
+        list.add("30");
+        list.add("60");
+        list.add("90");
+        list.add("120");
 
-		spinner1.setAdapter(dataAdapter);
-		
-		
-		// load controlls from settings
-		 settings = new SettingsHelper(this);
-		 		 
-		 autostart.setChecked(settings.isAutoStart());
-		 keepRunnning.setChecked(settings.isKeepRunnning());
-		
- 		 int spinnerPostion = dataAdapter.getPosition(String.valueOf(settings.getTimePeriod()));
-         spinner1.setSelection(spinnerPostion);
-	}
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		toogleButtons();
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		saveSettings();
-	
-	}
+        dataAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-	private void saveSettings() {
-		// save to settings
-		settings.setAutoStart(autostart.isChecked());
-		settings.setKeepRunnning(keepRunnning.isChecked());
-		settings.setTimePeriod(Integer.parseInt(spinner1.getSelectedItem().toString()));
-	
-		
-	}
+        timeSpinner.setAdapter(dataAdapter);
 
-	private void toogleButtons() {
 
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        // load controlls from settings
+        settings = new SettingsHelper(this);
 
-		Button stop= (Button) findViewById(R.id.buttonStop);
-		Button start= (Button) findViewById(R.id.buttonStart);
-		
-		if (ReminderService.isServiceRunning()) {
-			stop.setEnabled(true);
-			stop.setTextColor(Color.WHITE);
+        autostart.setChecked(settings.isAutoStart());
+        keepRunnning.setChecked(settings.isKeepRunnning());
 
-			start.setEnabled(false);
-			start.setTextColor(Color.LTGRAY);
-		} else {
-			stop.setEnabled(false);
-			stop.setTextColor(Color.LTGRAY);
+        int spinnerPostion = dataAdapter.getPosition(String.valueOf(settings.getTimePeriod()));
+        timeSpinner.setSelection(spinnerPostion);
+    }
 
-			start.setEnabled(true);
-			start.setTextColor(Color.WHITE);
-		}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        toogleButtons();
+    }
 
-	}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveSettings();
 
-	public void startService(View v) {
+    }
 
-		saveSettings();
-		
-		
-		Intent i = new Intent(this, ReminderService.class);
-		startService(i);
+    private void saveSettings() {
+        // save to settings
+        settings.setAutoStart(autostart.isChecked());
+        settings.setKeepRunnning(keepRunnning.isChecked());
+        settings.setTimePeriod(Integer.parseInt(timeSpinner.getSelectedItem().toString()));
 
-		toogleButtons();
-	}
 
-	public void stopService(View v) {
+    }
 
-		Intent i = new Intent(this, ReminderService.class);
-		stopService(i);
-		toogleButtons();
-	}
+    private void toogleButtons() {
 
-	public void openGpsSettings(View v) {
-		Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-		startActivity(intent);
-	}
-	
-	public void closeApp(View v) {
-		finish();
-	}
+/*        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+*/
+
+        if (ReminderService.isServiceRunning()) {
+            stop.setEnabled(true);
+            stop.setTextColor(Color.WHITE);
+
+            start.setEnabled(false);
+            start.setTextColor(Color.LTGRAY);
+        } else {
+            stop.setEnabled(false);
+            stop.setTextColor(Color.LTGRAY);
+
+            start.setEnabled(true);
+            start.setTextColor(Color.WHITE);
+        }
+
+    }
+
+    public void startService(View v) {
+
+        saveSettings();
+
+
+        Intent i = new Intent(this, ReminderService.class);
+        startService(i);
+
+        toogleButtons();
+    }
+
+    public void stopService(View v) {
+
+        Intent i = new Intent(this, ReminderService.class);
+        stopService(i);
+        toogleButtons();
+    }
+
+    public void openGpsSettings(View v) {
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
+    }
+
+    public void closeApp(View v) {
+        finish();
+    }
 }

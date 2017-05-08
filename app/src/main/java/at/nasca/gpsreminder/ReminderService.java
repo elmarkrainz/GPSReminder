@@ -17,175 +17,178 @@ import android.widget.Toast;
 
 public class ReminderService extends Service {
 
-	private static final String SERVICE_TAG = "REMINDER SERVICE";
+    private static final String SERVICE_TAG = "REMINDER SERVICE";
 
-	private LocationManager locManager;
-	private CountDownTimer cdt = null;
-	private int counter;
-	private static boolean serviceIsRunning;
-	private SettingsHelper settings;
-	private int timePeriod = 60 * 60 * 1000;
+    private LocationManager locManager;
+    private CountDownTimer cdt = null;
+    private int counter;
+    private static boolean serviceIsRunning;
+    private SettingsHelper settings;
+    private int timePeriod = 60 * 60 * 1000;
 
-	private boolean isGPSon;
+    private boolean isGPSon;
 
-	public static boolean isServiceRunning() {
-		return serviceIsRunning;
-	}
+    public static boolean isServiceRunning() {
+        return serviceIsRunning;
+    }
 
-	@Override
-	public IBinder onBind(Intent arg0) {
-		return null;
-	}
+    @Override
+    public IBinder onBind(Intent arg0) {
+        return null;
+    }
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Toast.makeText(this, "GPS Reminder Service started!", Toast.LENGTH_LONG)
-				.show();
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Toast.makeText(this, getResources().getString(R.string.service_started), Toast.LENGTH_LONG)
+                .show();
 
-		// ---------log
-		Log.i(SERVICE_TAG, "Service created ");
-		Log.i(SERVICE_TAG, getServiceInfo());
+        // ---------log
+       // Log.i(SERVICE_TAG, "Service created ");
+        //Log.i(SERVICE_TAG, getServiceInfo());
 
-		settings = new SettingsHelper(this);
-		timePeriod = settings.getTimePeriod() * 60 * 1000;
-		counter = 0;
+        settings = new SettingsHelper(this);
+        timePeriod = settings.getTimePeriod() * 60 * 1000;
+        counter = 0;
 
-		serviceIsRunning = true;
+        serviceIsRunning = true;
 
-		// ----log
-		Log.i(SERVICE_TAG, getServiceInfo());
+        // ----log
+        Log.i(SERVICE_TAG, getServiceInfo());
 
-		locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		// first check
-		if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        // first check
+        if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
-			Log.i(SERVICE_TAG, "start Checking");
-			
-			// Start countdown
-			cdt = new CountDownTimer(timePeriod, 60000) {
-				@Override
-				public void onTick(long millisUntilFinished) {
+            Log.i(SERVICE_TAG, "start Checking");
 
-					Log.i(SERVICE_TAG, "Countdown seconds remaining: "
-							+ millisUntilFinished / 1000);
-					Log.i(SERVICE_TAG, "Countdown seconds remaining: "
-							+ millisUntilFinished / 60000);
-					Log.i(SERVICE_TAG, getServiceInfo());
-				}
+            // Start countdown
+            cdt = new CountDownTimer(timePeriod, 60000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
 
-				public void onFinish() {
+                    Log.i(SERVICE_TAG, "Countdown seconds remaining: "
+                            + millisUntilFinished / 1000);
+                    Log.i(SERVICE_TAG, "Countdown seconds remaining: "
+                            + millisUntilFinished / 60000);
+                    Log.i(SERVICE_TAG, getServiceInfo());
+                }
 
-					// ---------log
-					Log.i(SERVICE_TAG, "Timer Finished ");
-					Log.i(SERVICE_TAG, getServiceInfo());
+                public void onFinish() {
 
-					if (locManager
-							.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    // ---------log
+                    //	Log.i(SERVICE_TAG, "Timer Finished ");
+                    //	Log.i(SERVICE_TAG, getServiceInfo());
 
-						// Toast.makeText(ReminderService.this,"GPS is active ...",
-						// Toast.LENGTH_LONG).show();
+                    String title = getResources().getString(R.string.app_name);
+                    if (locManager
+                            .isProviderEnabled(LocationManager.GPS_PROVIDER ) ) {
 
-						isGPSon = true;
-						notifyGPSStatus("GPS Reminder", "GPS is active");
+                        // Toast.makeText(ReminderService.this,"GPS is active ...",
+                        // Toast.LENGTH_LONG).show();
 
-						// ---------log
-						Log.i(SERVICE_TAG, "Notification ");
-						Log.i(SERVICE_TAG, getServiceInfo());
+                        isGPSon = true;
 
-					} else {
+                        notifyGPSStatus(title, getResources().getString(R.string.gps_is_active));
 
-						// Toast.makeText(ReminderService.this,"GPS is NOT active ...",
-						// Toast.LENGTH_LONG).show();
-						isGPSon = false;
-						notifyGPSStatus("GPS Reminder", "GPS is NOT active ...");
-						ReminderService.this.stopSelf();
+                        // ---------log
+                        //		Log.i(SERVICE_TAG, "Notification ");
+                        //		Log.i(SERVICE_TAG, getServiceInfo());
 
-					}
+                    } else {
 
-					// Repeat 3 times
-					if (counter < 3) {
-						// onlx restart if gps is active
-						if (isGPSon) {
-							// ---------log
-							Log.i(SERVICE_TAG, "repartloop");
-							Log.i(SERVICE_TAG, getServiceInfo());
+                        // Toast.makeText(ReminderService.this,"GPS is NOT active ...",
+                        // Toast.LENGTH_LONG).show();
+                        isGPSon = false;
+                        notifyGPSStatus(title, getResources().getString(R.string.gps_isnot_active));
+                        ReminderService.this.stopSelf();
 
-							this.start();
-						} else {
-							Log.i(SERVICE_TAG, "no loop");
-							Log.i(SERVICE_TAG, getServiceInfo());
-						}
+                    }
 
-					} else {
+                    // Repeat 3 times
+                    if (counter < 3) {
+                        // onlx restart if gps is active
+                        if (isGPSon) {
+                            // ---------log
+                            Log.i(SERVICE_TAG, "repartloop");
+                            Log.i(SERVICE_TAG, getServiceInfo());
 
-						// if not KeepRunning, stop service and reopen App
+                            this.start();
+                        } else {
+                            Log.i(SERVICE_TAG, "no loop");
+                            Log.i(SERVICE_TAG, getServiceInfo());
+                        }
 
-						if (!settings.isKeepRunnning()) {
-							// stop service
-							ReminderService.this.stopSelf();
+                    } else {
 
-							// restart activity
-							Intent dialogIntent = new Intent(
-									ReminderService.this,
-									ReminderActivity.class);
-							dialogIntent
-									.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivity(dialogIntent);
-						}
-					}
-					counter++;
 
-				}
+                        // if not KeepRunning, stop service and reopen App
+                        if (!settings.isKeepRunnning()) {
+                            // stop service
+                            ReminderService.this.stopSelf();
 
-				private void notifyGPSStatus(String strTitle, String strText) {
-					Intent intent = new Intent(ReminderService.this,
-							ReminderActivity.class);
-					PendingIntent pIntent = PendingIntent.getService(
-							ReminderService.this, 0, intent, 0);
-					Uri soundUri = RingtoneManager
-							.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            // restart activity
+                            Intent dialogIntent = new Intent(
+                                    ReminderService.this,
+                                    ReminderActivity.class);
+                            dialogIntent
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(dialogIntent);
+                        }
+                    }
+                    counter++;
 
-					Notification n = new Notification.Builder(
-							ReminderService.this).setContentTitle(strTitle)
-							.setContentText(strText)
-							.setSmallIcon(R.drawable.ic_launcher)
-							.setContentIntent(pIntent).setAutoCancel(true) // GEHT
-																			// NED?
-							.setSound(soundUri).build();
+                }
 
-					NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                private void notifyGPSStatus(String strTitle, String strText) {
+                    Intent intent = new Intent(ReminderService.this,
+                            ReminderActivity.class);
+                    PendingIntent pIntent = PendingIntent.getService(
+                            ReminderService.this, 0, intent, 0);
+                    Uri soundUri = RingtoneManager
+                            .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-					notificationManager.notify(0, n);
-				};
-			};
+                    Notification n = new Notification.Builder(
+                            ReminderService.this).setContentTitle(strTitle)
+                            .setContentText(strText)
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentIntent(pIntent).setAutoCancel(true) // GEHT
+                            // NED?
+                            .setSound(soundUri).build();
 
-			cdt.start();
-		}
-		else{
-			Log.i(SERVICE_TAG, "NOT start Checking");
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-		}
-	}
+                    notificationManager.notify(0, n);
+                }
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
+                ;
+            };
 
-		serviceIsRunning = false;
+            cdt.start();
+        } else {
+            Log.i(SERVICE_TAG, "NOT start Checking");
 
-		Toast.makeText(this, "GPS Reminder service closed.", Toast.LENGTH_LONG)
-				.show();
+        }
+    }
 
-		// ---------log
-		Log.i(SERVICE_TAG, "Service stopped");
-		Log.i(SERVICE_TAG, getServiceInfo());
-	}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
-	private String getServiceInfo() {
-		return "Service info: GpsOn:" + isGPSon + ", Running: "
-				+ serviceIsRunning + " time: " + timePeriod + ", counter:"
-				+ counter + ", hashCode:" + this.hashCode();
-	}
+        serviceIsRunning = false;
+
+        Toast.makeText(this, "GPS Reminder service closed.", Toast.LENGTH_LONG)
+                .show();
+
+        // ---------log
+        Log.i(SERVICE_TAG, "Service stopped");
+        Log.i(SERVICE_TAG, getServiceInfo());
+    }
+
+    private String getServiceInfo() {
+        return "Service info: GpsOn:" + isGPSon + ", Running: "
+                + serviceIsRunning + " time: " + timePeriod + ", counter:"
+                + counter + ", hashCode:" + this.hashCode();
+    }
 }

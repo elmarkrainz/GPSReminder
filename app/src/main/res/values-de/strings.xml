@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GPSReminder</string>
+    <string name="intro">Der GPS Reminder läuft im Hintergrund und erinnert daran die Standortbestimmung via GPS zu beenden.</string>
+    <string name="gps_active">GPS ist aktiv</string>
+    <string name="gps_inactive">GPS ist inaktiv.</string>
+    <string name="remind_me">Erinnere mich!</string>
+    <string name="settings">Einstellungen</string>
+    <string name="time_period_to_remind_me">Zeitinterval für Erinnerungen</string>
+    <string name="auto_start">Auto-start</string>
+    <string name="start_gps_reminder_automatically_after_starting_the_device">Startet GPS-Reminder automatisch nach dem Stratvorgang.</string>
+    <string name="keep_running">Hintergrundservice</string>
+    <string name="keep_service_running">Service weiter laufen lassen</string>
+    <string name="gps_settings">GPS Einstellungen</string>
+    <string name="don_t_tell_me">Nicht Erinnern!</string>
+
+    <string name="gps_is_active">GPS ist AkTIV!</string>
+    <string name="gps_isnot_active">GPS ist NICHT AkTIV!</string>
+    <string name="service_started">GPS Reminder Service gestartet!</string>
+
+</resources>
